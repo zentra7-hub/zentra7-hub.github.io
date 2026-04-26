@@ -612,6 +612,227 @@
       .product-card { flex: 0 0 85vw; }
       .gallery-grid { grid-template-columns: 1fr; }
     }
+
+    /* ── MUSIC PLAYER ── */
+    body { padding-bottom: 76px; } /* room for fixed player */
+
+    .zplayer {
+      position: fixed;
+      bottom: 0; left: 0; right: 0;
+      z-index: 200;
+      height: 72px;
+      background: rgba(9,9,9,.96);
+      backdrop-filter: blur(20px);
+      border-top: 1px solid var(--border);
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      align-items: center;
+      padding: 0 24px;
+      gap: 16px;
+    }
+
+    /* progress bar sits on top edge of player */
+    .zp-progress-wrap {
+      position: absolute;
+      top: -2px; left: 0; right: 0;
+      height: 3px;
+      cursor: pointer;
+      z-index: 10;
+    }
+
+    .zp-progress-bg {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      background: rgba(255,255,255,.08);
+    }
+
+    .zp-progress-fill {
+      height: 100%;
+      width: 0%;
+      background: var(--accent);
+      transition: width .1s linear;
+      pointer-events: none;
+    }
+
+    .zp-progress-thumb {
+      position: absolute;
+      top: 50%;
+      left: 0%;
+      transform: translate(-50%, -50%);
+      width: 10px;
+      height: 10px;
+      background: #fff;
+      border-radius: 50%;
+      opacity: 0;
+      transition: opacity .2s, left .1s linear;
+      pointer-events: none;
+    }
+
+    .zp-progress-wrap:hover .zp-progress-thumb { opacity: 1; }
+    .zp-progress-wrap:hover .zp-progress-bg { height: 4px; }
+
+    /* LEFT */
+    .zp-left {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      min-width: 0;
+    }
+
+    .zp-art {
+      width: 44px;
+      height: 44px;
+      flex-shrink: 0;
+      border-radius: 3px;
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      color: var(--muted);
+    }
+
+    .zp-art svg { width: 20px; height: 20px; }
+    .zp-art img { width: 100%; height: 100%; object-fit: cover; }
+
+    .zp-meta {
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+      min-width: 0;
+    }
+
+    .zp-title {
+      font-family: var(--font-mono);
+      font-size: .7rem;
+      letter-spacing: .06em;
+      color: var(--text);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 200px;
+    }
+
+    .zp-artist {
+      font-family: var(--font-mono);
+      font-size: .6rem;
+      letter-spacing: .1em;
+      color: var(--accent);
+      text-transform: uppercase;
+    }
+
+    /* CENTER */
+    .zp-center {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .zp-btn {
+      background: transparent;
+      border: none;
+      color: var(--muted);
+      cursor: pointer;
+      width: 36px;
+      height: 36px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      transition: color .2s, background .2s;
+      flex-shrink: 0;
+    }
+
+    .zp-btn svg { width: 18px; height: 18px; }
+    .zp-btn:hover { color: var(--text); background: rgba(255,255,255,.06); }
+
+    .zp-play {
+      width: 44px;
+      height: 44px;
+      border: 1px solid var(--border);
+      color: var(--text);
+      transition: border-color .2s, background .2s, transform .1s;
+    }
+
+    .zp-play svg { width: 20px; height: 20px; }
+    .zp-play:hover { border-color: var(--accent); background: rgba(59,130,246,.1); transform: scale(1.05); }
+
+    /* RIGHT */
+    .zp-right {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      justify-content: flex-end;
+    }
+
+    .zp-time {
+      font-family: var(--font-mono);
+      font-size: .6rem;
+      letter-spacing: .06em;
+      color: var(--muted);
+      white-space: nowrap;
+    }
+
+    .zp-mute-btn { width: 30px; height: 30px; }
+    .zp-mute-btn svg { width: 16px; height: 16px; }
+
+    .zp-vol-wrap { width: 90px; }
+
+    .zp-vol {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 100%;
+      height: 3px;
+      background: rgba(255,255,255,.12);
+      border-radius: 2px;
+      outline: none;
+      cursor: pointer;
+      accent-color: var(--accent);
+    }
+
+    .zp-vol::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 12px;
+      height: 12px;
+      background: #fff;
+      border-radius: 50%;
+      cursor: pointer;
+      box-shadow: 0 0 4px rgba(0,0,0,.5);
+    }
+
+    /* load hint pulsing dot */
+    .zp-load-hint {
+      position: absolute;
+      right: 24px;
+      bottom: calc(72px + 8px);
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 10px 16px;
+      font-family: var(--font-mono);
+      font-size: .62rem;
+      letter-spacing: .08em;
+      color: var(--muted);
+      cursor: pointer;
+      transition: border-color .2s, color .2s;
+      animation: fadeUp .5s .3s both;
+    }
+
+    .zp-load-hint:hover { border-color: var(--accent); color: var(--text); }
+
+    @media (max-width: 680px) {
+      .zplayer { grid-template-columns: 1fr auto; padding: 0 14px; gap: 10px; }
+      .zp-right { display: none; }
+      .zp-time { display: none; }
+      .zp-title { max-width: 130px; }
+    }
+
+    @media (max-width: 420px) {
+      .zp-left { gap: 8px; }
+      .zp-art { width: 36px; height: 36px; }
+    }
   </style>
 </head>
 <body>
@@ -625,7 +846,7 @@
     <li><a href="#contacto">Contacto</a></li>
     <li>
       <!-- CAMBIAR: reemplazá el número y el mensaje por defecto -->
-      <a class="nav-cta" href="https://wa.me/59894899706?text=Hola%20Zentra%2C%20quiero%20info%20sobre%20los%20drops" target="_blank">
+      <a class="nav-cta" href="https://wa.me/59812345678?text=Hola%20Zentra%2C%20quiero%20info%20sobre%20los%20drops" target="_blank">
         ↗ WHATSAPP
       </a>
     </li>
@@ -742,7 +963,7 @@
       <div class="product-card">
         <div class="card-img">
           <!-- REEMPLAZÁ src por tu imagen -->
-          <div class="card-img-placeholder"><img src="Pantalonnegro.jpeg" alt="Baggy Jean Black"></div>
+          <div class="card-img-placeholder">[ IMAGEN PRODUCTO 1 ]</div>
           <!-- <img src="producto1.jpg" alt="Hoodie Void"> -->
           <span class="card-badge">NEW DROP</span>
         </div>
@@ -756,7 +977,7 @@
             </div>
             <!-- CAMBIAR: número y mensaje -->
             <a class="wa-btn"
-               href="https://wa.me/59894899706?text=Hola%20Zentra%21%20Quiero%20el%20Hoodie%20Void%20%E2%80%94%20precio%20%244.900"
+               href="https://wa.me/59812345678?text=Hola%20Zentra%21%20Quiero%20el%20Hoodie%20Void%20%E2%80%94%20precio%20%244.900"
                target="_blank">
               <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
                 <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/>
@@ -783,7 +1004,7 @@
               $2.200
             </div>
             <a class="wa-btn"
-               href="https://wa.me/59894899706?text=Hola%20Zentra%21%20Quiero%20la%20Tee%20Shadow%20%E2%80%94%20precio%20%242.200"
+               href="https://wa.me/59812345678?text=Hola%20Zentra%21%20Quiero%20la%20Tee%20Shadow%20%E2%80%94%20precio%20%242.200"
                target="_blank">
               <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
                 <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/>
@@ -811,7 +1032,7 @@
               $1.800
             </div>
             <a class="wa-btn"
-               href="https://wa.me/59894899706?text=Hola%20Zentra%21%20Quiero%20la%20Cap%20Grid%20%E2%80%94%20precio%20%241.800"
+               href="https://wa.me/59812345678?text=Hola%20Zentra%21%20Quiero%20la%20Cap%20Grid%20%E2%80%94%20precio%20%241.800"
                target="_blank">
               <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
                 <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/>
@@ -826,18 +1047,18 @@
       <!-- PRODUCTO 4 (ejemplo extra) -->
       <div class="product-card">
         <div class="card-img">
-          <div class="card-img-placeholder"> <img src="" alt=""> </div>
+          <div class="card-img-placeholder">[ IMAGEN PRODUCTO 4 ]</div>
         </div>
         <div class="card-body">
-          <h3 class="card-name"></h3>
-          <p class="card-desc"></p>
+          <h3 class="card-name">CARGO ZENTRA</h3>
+          <p class="card-desc">Pantalón cargo táctico. Bolsillos laterales funcionales. Tela ripstop. Negro / Militar.</p>
           <div class="card-footer">
             <div class="card-price">
               <small>PRECIO</small>
-              UYU$
+              $6.500
             </div>
             <a class="wa-btn"
-               href=""
+               href="https://wa.me/59812345678?text=Hola%20Zentra%21%20Quiero%20el%20Cargo%20Zentra%20%E2%80%94%20precio%20%246.500"
                target="_blank">
               <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
                 <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/>
@@ -891,7 +1112,7 @@
   <p>Stock limitado. Sin segunda oportunidad.<br>Escribinos y asegurá el tuyo antes que nadie.</p>
   <!-- CAMBIAR: número WhatsApp -->
   <a class="btn-primary"
-     href="https://wa.me/59894899706?text=Hola%20Zentra%21%20Quiero%20info%20sobre%20los%20drops%20actuales"
+     href="https://wa.me/59812345678?text=Hola%20Zentra%21%20Quiero%20info%20sobre%20los%20drops%20actuales"
      target="_blank"
      style="font-size:.85rem; padding:16px 40px; margin: 0 auto;">
     <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
@@ -908,6 +1129,65 @@
   <p>© 2025 ZENTRA — TODOS LOS DERECHOS RESERVADOS</p>
   <p style="color:#374151;">HECHO EN UY 🇺🇾</p>
 </footer>
+
+<!-- ─────────────────────────── MUSIC PLAYER ─────────────────────────── -->
+<div id="zplayer" class="zplayer">
+  <!-- progress bar (top edge) -->
+  <div class="zp-progress-wrap" id="zpProgressWrap">
+    <div class="zp-progress-bg">
+      <div class="zp-progress-fill" id="zpFill"></div>
+      <div class="zp-progress-thumb" id="zpThumb"></div>
+    </div>
+  </div>
+
+  <!-- LEFT: track info -->
+  <div class="zp-left">
+    <div class="zp-art" id="zpArt">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2">
+        <circle cx="12" cy="12" r="3"/><path d="M12 9V3l4 2"/>
+        <circle cx="12" cy="12" r="9" stroke-opacity=".3"/>
+      </svg>
+    </div>
+    <div class="zp-meta">
+      <span class="zp-title" id="zpTitle">Sin pista cargada</span>
+      <span class="zp-artist" id="zpArtist">ZENTRA</span>
+    </div>
+  </div>
+
+  <!-- CENTER: controls -->
+  <div class="zp-center">
+    <button class="zp-btn" id="zpPrev" title="Anterior">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M6 6h2v12H6zm3.5 6 8.5 6V6z"/></svg>
+    </button>
+    <button class="zp-btn zp-play" id="zpPlay" title="Play/Pause">
+      <svg class="icon-play" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+      <svg class="icon-pause" viewBox="0 0 24 24" fill="currentColor" style="display:none"><path d="M6 19h4V5H6zm8-14v14h4V5z"/></svg>
+    </button>
+    <button class="zp-btn" id="zpNext" title="Siguiente">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M16 6h2v12h-2zM5 18l8.5-6L5 6z"/></svg>
+    </button>
+  </div>
+
+  <!-- RIGHT: volume + time -->
+  <div class="zp-right">
+    <span class="zp-time" id="zpTime">0:00 / 0:00</span>
+    <button class="zp-btn zp-mute-btn" id="zpMute" title="Mute">
+      <svg class="icon-vol" viewBox="0 0 24 24" fill="currentColor">
+        <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3A4.5 4.5 0 0 0 14 7.97v8.05c1.48-.73 2.5-2.25 2.5-4.02z"/>
+      </svg>
+      <svg class="icon-mute" viewBox="0 0 24 24" fill="currentColor" style="display:none">
+        <path d="M16.5 12A4.5 4.5 0 0 0 14 7.97v2.21l2.45 2.45c.03-.2.05-.41.05-.63zm2.5 0c0 .94-.2 1.82-.54 2.64l1.51 1.51C20.63 14.91 21 13.5 21 12c0-4.28-2.99-7.86-7-8.77v2.06c2.89.86 5 3.54 5 6.71zM4.27 3 3 4.27 7.73 9H3v6h4l5 5v-6.73l4.25 4.25c-.67.52-1.42.93-2.25 1.18v2.06A8.99 8.99 0 0 0 17.73 19L19 20.27 20.27 19 5.27 4 4.27 3zM12 4 9.91 6.09 12 8.18V4z"/>
+      </svg>
+    </button>
+    <div class="zp-vol-wrap">
+      <input type="range" class="zp-vol" id="zpVol" min="0" max="100" value="80">
+    </div>
+  </div>
+
+  <!-- hidden audio + file input -->
+  <audio id="zpAudio"></audio>
+  <input type="file" id="zpFileInput" accept="audio/*" multiple style="display:none">
+</div>
 
 <!-- ─────────────────────────── JS CARRUSEL ─────────────────────────── -->
 <script>
@@ -946,6 +1226,285 @@
     const dx = touchStartX - e.changedTouches[0].clientX;
     if (Math.abs(dx) > 50) goTo(current + (dx > 0 ? 1 : -1));
   });
+</script>
+
+<!-- ─────────────────────────── JS MUSIC PLAYER ─────────────────────────── -->
+<script>
+(function () {
+  const audio    = document.getElementById('zpAudio');
+  const playBtn  = document.getElementById('zpPlay');
+  const prevBtn2 = document.getElementById('zpPrev');
+  const nextBtn2 = document.getElementById('zpNext');
+  const muteBtn  = document.getElementById('zpMute');
+  const volSlider= document.getElementById('zpVol');
+  const fill     = document.getElementById('zpFill');
+  const thumb    = document.getElementById('zpThumb');
+  const progWrap = document.getElementById('zpProgressWrap');
+  const titleEl  = document.getElementById('zpTitle');
+  const artistEl = document.getElementById('zpArtist');
+  const timeEl   = document.getElementById('zpTime');
+  const artEl    = document.getElementById('zpArt');
+  const fileInput= document.getElementById('zpFileInput');
+
+  let playlist = [];
+  let currentIdx = 0;
+  let dragging = false;
+
+  /* ── LOAD HINT ── */
+  const hint = document.createElement('div');
+  hint.className = 'zp-load-hint';
+  hint.textContent = '+ CARGAR MÚSICA';
+  hint.title = 'Cargá tus archivos de audio';
+  document.body.appendChild(hint);
+
+  hint.addEventListener('click', () => fileInput.click());
+
+  /* ── FILE INPUT ── */
+  fileInput.addEventListener('change', e => {
+    const files = Array.from(e.target.files);
+    if (!files.length) return;
+    playlist = files.map(f => ({
+      url: URL.createObjectURL(f),
+      name: f.name.replace(/\.[^.]+$/, ''),
+      raw: f
+    }));
+    currentIdx = 0;
+    loadTrack(currentIdx);
+    play();
+    hint.style.display = 'none';
+  });
+
+  /* ── DRAG & DROP onto player ── */
+  const player = document.getElementById('zplayer');
+  player.addEventListener('dragover', e => { e.preventDefault(); player.style.borderColor = 'var(--accent)'; });
+  player.addEventListener('dragleave', () => { player.style.borderColor = ''; });
+  player.addEventListener('drop', e => {
+    e.preventDefault();
+    player.style.borderColor = '';
+    const files = Array.from(e.dataTransfer.files).filter(f => f.type.startsWith('audio/'));
+    if (!files.length) return;
+    playlist = files.map(f => ({
+      url: URL.createObjectURL(f),
+      name: f.name.replace(/\.[^.]+$/, ''),
+      raw: f
+    }));
+    currentIdx = 0;
+    loadTrack(0);
+    play();
+    hint.style.display = 'none';
+  });
+
+  /* ── LOAD TRACK ── */
+  function loadTrack(idx) {
+    if (!playlist.length) return;
+    const t = playlist[idx];
+    audio.src = t.url;
+    titleEl.textContent  = t.name;
+    artistEl.textContent = 'ZENTRA';
+    /* try cover art via ID3 — skip if not available */
+    artEl.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2">
+      <circle cx="12" cy="12" r="3"/><path d="M12 9V3l4 2"/>
+      <circle cx="12" cy="12" r="9" stroke-opacity=".3"/></svg>`;
+    updateTime();
+  }
+
+  /* ── FADE HELPERS ── */
+  const FADE_DURATION = 1500; // ms
+  const FADE_STEPS    = 40;
+  let fadeInterval    = null;
+
+  function getUserVol() { return volSlider.value / 100; }
+
+  function clearFade() {
+    if (fadeInterval) { clearInterval(fadeInterval); fadeInterval = null; }
+  }
+
+  function fadeIn() {
+    clearFade();
+    audio.volume = 0;
+    audio.play();
+    playBtn.querySelector('.icon-play').style.display  = 'none';
+    playBtn.querySelector('.icon-pause').style.display = '';
+    const target   = getUserVol();
+    const step     = target / FADE_STEPS;
+    const interval = FADE_DURATION / FADE_STEPS;
+    fadeInterval = setInterval(() => {
+      if (audio.volume + step >= target) {
+        audio.volume = target;
+        clearFade();
+      } else {
+        audio.volume = Math.min(target, audio.volume + step);
+      }
+    }, interval);
+  }
+
+  function fadeOut(onDone) {
+    clearFade();
+    const start    = audio.volume;
+    const step     = start / FADE_STEPS;
+    const interval = FADE_DURATION / FADE_STEPS;
+    fadeInterval = setInterval(() => {
+      if (audio.volume - step <= 0) {
+        audio.volume = 0;
+        clearFade();
+        audio.pause();
+        playBtn.querySelector('.icon-play').style.display  = '';
+        playBtn.querySelector('.icon-pause').style.display = 'none';
+        if (onDone) onDone();
+      } else {
+        audio.volume = Math.max(0, audio.volume - step);
+      }
+    }, interval);
+  }
+
+  /* ── PLAY / PAUSE ── */
+  function play() { fadeIn(); }
+
+  function pause() { fadeOut(); }
+
+  playBtn.addEventListener('click', () => {
+    if (!playlist.length) { fileInput.click(); return; }
+    audio.paused ? play() : pause();
+  });
+
+  /* ── PREV / NEXT ── */
+  prevBtn2.addEventListener('click', () => {
+    if (!playlist.length) return;
+    fadeOut(() => {
+      currentIdx = (currentIdx - 1 + playlist.length) % playlist.length;
+      loadTrack(currentIdx);
+      play();
+    });
+  });
+
+  nextBtn2.addEventListener('click', () => {
+    if (!playlist.length) return;
+    fadeOut(() => {
+      currentIdx = (currentIdx + 1) % playlist.length;
+      loadTrack(currentIdx);
+      play();
+    });
+  });
+
+  audio.addEventListener('ended', () => {
+    if (playlist.length > 1) {
+      currentIdx = (currentIdx + 1) % playlist.length;
+      loadTrack(currentIdx);
+      play();
+    } else { pause(); }
+  });
+
+  /* ── PROGRESS ── */
+  function updateProgress() {
+    if (!audio.duration || dragging) return;
+    const pct = (audio.currentTime / audio.duration) * 100;
+    fill.style.width  = pct + '%';
+    thumb.style.left  = pct + '%';
+    updateTime();
+  }
+
+  audio.addEventListener('timeupdate', updateProgress);
+
+  function seekTo(e) {
+    if (!audio.duration) return;
+    const rect = progWrap.getBoundingClientRect();
+    const pct  = Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width));
+    audio.currentTime = pct * audio.duration;
+    fill.style.width = (pct * 100) + '%';
+    thumb.style.left = (pct * 100) + '%';
+  }
+
+  progWrap.addEventListener('mousedown', e => { dragging = true; seekTo(e); });
+  window.addEventListener('mousemove',  e => { if (dragging) seekTo(e); });
+  window.addEventListener('mouseup',    () => { dragging = false; });
+  progWrap.addEventListener('touchstart', e => { dragging = true; seekTo(e.touches[0]); }, { passive: true });
+  window.addEventListener('touchmove',  e => { if (dragging) seekTo(e.touches[0]); }, { passive: true });
+  window.addEventListener('touchend',   () => { dragging = false; });
+
+  /* ── TIME DISPLAY ── */
+  function fmt(s) {
+    const m = Math.floor(s / 60);
+    const sec = Math.floor(s % 60);
+    return `${m}:${sec.toString().padStart(2, '0')}`;
+  }
+
+  function updateTime() {
+    const cur = isNaN(audio.currentTime) ? 0 : audio.currentTime;
+    const dur = isNaN(audio.duration)    ? 0 : audio.duration;
+    timeEl.textContent = `${fmt(cur)} / ${fmt(dur)}`;
+  }
+
+  audio.addEventListener('loadedmetadata', updateTime);
+
+  /* ── VOLUME ── */
+  audio.volume = 0.25;
+  volSlider.value = 25;
+  volSlider.addEventListener('input', () => {
+    audio.volume = volSlider.value / 100;
+    audio.muted  = audio.volume === 0;
+    syncMuteIcon();
+  });
+
+  muteBtn.addEventListener('click', () => {
+    audio.muted = !audio.muted;
+    syncMuteIcon();
+  });
+
+  function syncMuteIcon() {
+    const muted = audio.muted || audio.volume === 0;
+    muteBtn.querySelector('.icon-vol').style.display  = muted ? 'none' : '';
+    muteBtn.querySelector('.icon-mute').style.display = muted ? ''     : 'none';
+  }
+
+  /* ── KEYBOARD SHORTCUTS ── */
+  document.addEventListener('keydown', e => {
+    if (['INPUT','TEXTAREA'].includes(document.activeElement.tagName)) return;
+    if (e.code === 'Space')       { e.preventDefault(); audio.paused ? play() : pause(); }
+    if (e.code === 'ArrowRight')  { audio.currentTime = Math.min(audio.duration, audio.currentTime + 5); }
+    if (e.code === 'ArrowLeft')   { audio.currentTime = Math.max(0, audio.currentTime - 5); }
+    if (e.code === 'ArrowUp')     { e.preventDefault(); audio.volume = Math.min(1, audio.volume + .05); volSlider.value = audio.volume * 100; }
+    if (e.code === 'ArrowDown')   { e.preventDefault(); audio.volume = Math.max(0, audio.volume - .05); volSlider.value = audio.volume * 100; }
+    if (e.code === 'KeyM')        { muteBtn.click(); }
+  });
+
+  /* 
+   ══════════════════════════════════════════════════
+   CÓMO CARGAR CANCIONES AUTOMÁTICAMENTE:
+
+   Reemplazá el array de abajo con tus archivos.
+   La música arrancará sola en el primer clic del
+   usuario en cualquier parte de la página.
+
+   playlist = [
+     { url: 'cancion1.mp3', name: 'Nombre Canción 1' },
+     { url: 'cancion2.mp3', name: 'Nombre Canción 2' },
+   ];
+   ══════════════════════════════════════════════════
+  */
+
+  /* ── AUTOPLAY EN PRIMER CLIC ── */
+  playlist = [
+    { url: 'song-1.mp3', name: 'Song 1' },
+    // { url: 'cancion2.mp3', name: 'Nombre Canción 2' },
+  ];
+
+  if (playlist.length) {
+    loadTrack(0);
+    hint.style.display = 'none';
+
+    let unlocked = false;
+    function unlockAudio() {
+      if (unlocked) return;
+      unlocked = true;
+      play();
+      document.removeEventListener('click',      unlockAudio);
+      document.removeEventListener('touchstart', unlockAudio);
+    }
+    document.addEventListener('click',      unlockAudio);
+    document.addEventListener('touchstart', unlockAudio, { passive: true });
+  }
+
+})();
 </script>
 
 </body>
