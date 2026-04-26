@@ -1437,8 +1437,8 @@
   audio.addEventListener('loadedmetadata', updateTime);
 
   /* ── VOLUME ── */
-  audio.volume = 0.25;
-  volSlider.value = 25;
+  audio.volume = 0.1;
+  volSlider.value = 10;
   volSlider.addEventListener('input', () => {
     audio.volume = volSlider.value / 100;
     audio.muted  = audio.volume === 0;
