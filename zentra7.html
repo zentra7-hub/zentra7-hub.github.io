@@ -1,0 +1,952 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>ZENTRA — Drop oficial</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --bg:        #090909;
+      --bg2:       #0F172A;
+      --accent:    #3B82F6;
+      --accent2:   #1D4ED8;
+      --text:      #E5E7EB;
+      --muted:     #6B7280;
+      --border:    rgba(59,130,246,.18);
+      --font-display: 'Bebas Neue', sans-serif;
+      --font-mono:    'Space Mono', monospace;
+      --font-body:    'DM Sans', sans-serif;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--font-body);
+      overflow-x: hidden;
+    }
+
+    /* ── NOISE OVERLAY ── */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.04'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 999;
+      opacity: .45;
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 18px 48px;
+      background: rgba(9,9,9,.82);
+      backdrop-filter: blur(14px);
+      border-bottom: 1px solid var(--border);
+    }
+
+    nav img.nav-logo {
+      height: 38px;
+      filter: brightness(0) invert(1);
+    }
+
+    nav ul {
+      list-style: none;
+      display: flex;
+      gap: 36px;
+    }
+
+    nav ul a {
+      text-decoration: none;
+      color: var(--muted);
+      font-family: var(--font-mono);
+      font-size: .7rem;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      transition: color .2s;
+    }
+
+    nav ul a:hover { color: var(--text); }
+
+    .nav-cta {
+      background: var(--accent);
+      color: #fff !important;
+      padding: 8px 22px;
+      border-radius: 2px;
+      font-family: var(--font-mono);
+      font-size: .7rem !important;
+      letter-spacing: .1em;
+      transition: background .2s !important;
+    }
+    .nav-cta:hover { background: var(--accent2) !important; color: #fff !important; }
+
+    /* ── HERO ── */
+    #hero {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 120px 24px 80px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    #hero::after {
+      content: '';
+      position: absolute;
+      bottom: -160px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 700px;
+      height: 700px;
+      background: radial-gradient(circle, rgba(59,130,246,.13) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .hero-eyebrow {
+      font-family: var(--font-mono);
+      font-size: .65rem;
+      letter-spacing: .25em;
+      color: var(--accent);
+      text-transform: uppercase;
+      margin-bottom: 28px;
+      opacity: 0;
+      animation: fadeUp .7s .1s forwards;
+    }
+
+    .hero-logo {
+      width: min(520px, 80vw);
+      filter: brightness(0) invert(1);
+      opacity: 0;
+      animation: fadeUp .8s .25s forwards;
+    }
+
+    .hero-sub {
+      margin-top: 32px;
+      font-size: 1.05rem;
+      color: var(--muted);
+      max-width: 480px;
+      line-height: 1.7;
+      opacity: 0;
+      animation: fadeUp .8s .4s forwards;
+    }
+
+    .hero-actions {
+      display: flex;
+      gap: 16px;
+      margin-top: 44px;
+      flex-wrap: wrap;
+      justify-content: center;
+      opacity: 0;
+      animation: fadeUp .8s .55s forwards;
+    }
+
+    .btn-primary {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--accent);
+      color: #fff;
+      text-decoration: none;
+      font-family: var(--font-mono);
+      font-size: .75rem;
+      letter-spacing: .1em;
+      padding: 14px 32px;
+      border-radius: 2px;
+      transition: background .2s, transform .15s;
+    }
+    .btn-primary:hover { background: var(--accent2); transform: translateY(-1px); }
+
+    .btn-ghost {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      border: 1px solid var(--border);
+      color: var(--text);
+      text-decoration: none;
+      font-family: var(--font-mono);
+      font-size: .75rem;
+      letter-spacing: .1em;
+      padding: 14px 32px;
+      border-radius: 2px;
+      transition: border-color .2s, transform .15s;
+    }
+    .btn-ghost:hover { border-color: var(--accent); transform: translateY(-1px); }
+
+    .scroll-line {
+      position: absolute;
+      bottom: 32px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      opacity: 0;
+      animation: fadeUp .6s .9s forwards;
+    }
+
+    .scroll-line span {
+      font-family: var(--font-mono);
+      font-size: .6rem;
+      letter-spacing: .2em;
+      color: var(--muted);
+    }
+
+    .scroll-line::after {
+      content: '';
+      display: block;
+      width: 1px;
+      height: 48px;
+      background: linear-gradient(to bottom, var(--muted), transparent);
+      animation: scrollPulse 1.6s ease-in-out infinite;
+    }
+
+    /* ── VIDEO SECTION ── */
+    #video-section {
+      padding: 100px 24px;
+      text-align: center;
+    }
+
+    .section-label {
+      font-family: var(--font-mono);
+      font-size: .65rem;
+      letter-spacing: .25em;
+      color: var(--accent);
+      text-transform: uppercase;
+      margin-bottom: 14px;
+    }
+
+    .section-title {
+      font-family: var(--font-display);
+      font-size: clamp(2.5rem, 6vw, 5rem);
+      letter-spacing: .04em;
+      line-height: 1;
+      margin-bottom: 48px;
+    }
+
+    .video-wrapper {
+      max-width: 900px;
+      margin: 0 auto;
+      border-radius: 4px;
+      overflow: hidden;
+      border: 1px solid var(--border);
+      aspect-ratio: 16/9;
+      background: #111;
+      position: relative;
+    }
+
+    .video-wrapper video,
+    .video-wrapper iframe {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    /* placeholder for when no video is set */
+    .video-placeholder {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      color: var(--muted);
+      font-family: var(--font-mono);
+      font-size: .7rem;
+      letter-spacing: .1em;
+    }
+
+    .video-placeholder svg { opacity: .3; }
+
+    /* ── CARRUSEL ── */
+    #productos {
+      padding: 100px 24px;
+    }
+
+    .carousel-header {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      max-width: 1200px;
+      margin: 0 auto 48px;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+
+    .carousel-header .section-title { margin-bottom: 0; }
+
+    .carousel-nav {
+      display: flex;
+      gap: 10px;
+    }
+
+    .carr-btn {
+      width: 44px;
+      height: 44px;
+      border: 1px solid var(--border);
+      background: transparent;
+      color: var(--text);
+      border-radius: 2px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: border-color .2s, background .2s;
+    }
+    .carr-btn:hover { border-color: var(--accent); background: rgba(59,130,246,.08); }
+
+    .carousel-track-wrap {
+      max-width: 1200px;
+      margin: 0 auto;
+      overflow: hidden;
+    }
+
+    .carousel-track {
+      display: flex;
+      gap: 20px;
+      transition: transform .45s cubic-bezier(.25,.46,.45,.94);
+    }
+
+    /* ── PRODUCT CARD ── */
+    .product-card {
+      flex: 0 0 calc(33.333% - 14px);
+      min-width: 280px;
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      transition: transform .25s, border-color .25s;
+    }
+
+    .product-card:hover {
+      transform: translateY(-4px);
+      border-color: rgba(59,130,246,.4);
+    }
+
+    .card-img {
+      aspect-ratio: 1/1;
+      background: #141414;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .card-img img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform .5s ease;
+    }
+
+    .product-card:hover .card-img img { transform: scale(1.05); }
+
+    /* placeholder when no image */
+    .card-img-placeholder {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-mono);
+      font-size: .65rem;
+      color: var(--muted);
+      letter-spacing: .1em;
+    }
+
+    .card-badge {
+      position: absolute;
+      top: 14px;
+      left: 14px;
+      background: var(--accent);
+      color: #fff;
+      font-family: var(--font-mono);
+      font-size: .6rem;
+      letter-spacing: .1em;
+      padding: 4px 10px;
+      border-radius: 2px;
+    }
+
+    .card-body {
+      padding: 22px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      flex: 1;
+    }
+
+    .card-name {
+      font-family: var(--font-display);
+      font-size: 1.55rem;
+      letter-spacing: .04em;
+      line-height: 1;
+    }
+
+    .card-desc {
+      font-size: .82rem;
+      color: var(--muted);
+      line-height: 1.6;
+      flex: 1;
+    }
+
+    .card-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: 8px;
+    }
+
+    .card-price {
+      font-family: var(--font-mono);
+      font-size: 1.1rem;
+      color: var(--text);
+    }
+
+    .card-price small {
+      font-size: .65rem;
+      color: var(--muted);
+      letter-spacing: .08em;
+      display: block;
+      margin-bottom: 2px;
+    }
+
+    .wa-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      background: var(--accent);
+      color: #fff;
+      text-decoration: none;
+      font-family: var(--font-mono);
+      font-size: .68rem;
+      letter-spacing: .08em;
+      padding: 10px 18px;
+      border-radius: 2px;
+      white-space: nowrap;
+      transition: background .2s;
+    }
+    .wa-btn:hover { background: var(--accent2); }
+
+    /* ── GALLERY GRID ── */
+    #galeria {
+      padding: 100px 24px;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .gallery-grid {
+      display: grid;
+      grid-template-columns: repeat(12, 1fr);
+      grid-auto-rows: 220px;
+      gap: 12px;
+      margin-top: 48px;
+    }
+
+    .g-item {
+      background: #141414;
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .g-item img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform .5s ease, opacity .3s;
+    }
+
+    .g-item:hover img { transform: scale(1.06); opacity: .85; }
+
+    .g-1 { grid-column: span 5; grid-row: span 2; }
+    .g-2 { grid-column: span 4; }
+    .g-3 { grid-column: span 3; }
+    .g-4 { grid-column: span 4; }
+    .g-5 { grid-column: span 3; }
+    .g-6 { grid-column: span 7; }
+
+    .g-item-placeholder {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-mono);
+      font-size: .6rem;
+      color: var(--muted);
+      letter-spacing: .1em;
+    }
+
+    /* ── MARQUEE ── */
+    .marquee-wrap {
+      overflow: hidden;
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      padding: 18px 0;
+      margin: 60px 0;
+    }
+
+    .marquee-inner {
+      display: flex;
+      white-space: nowrap;
+      animation: marqueeRoll 22s linear infinite;
+    }
+
+    .marquee-item {
+      font-family: var(--font-display);
+      font-size: 1.1rem;
+      letter-spacing: .12em;
+      color: var(--muted);
+      padding: 0 42px;
+    }
+
+    .marquee-item span { color: var(--accent); margin-right: 42px; }
+
+    /* ── CTA FINAL ── */
+    #contacto {
+      padding: 120px 24px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    #contacto::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 600px;
+      height: 400px;
+      background: radial-gradient(ellipse, rgba(59,130,246,.1) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    #contacto .section-title { margin-bottom: 16px; }
+
+    #contacto p {
+      color: var(--muted);
+      font-size: .95rem;
+      max-width: 440px;
+      margin: 0 auto 40px;
+      line-height: 1.7;
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 32px 48px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+
+    footer img {
+      height: 28px;
+      filter: brightness(0) invert(1);
+      opacity: .5;
+    }
+
+    footer p {
+      font-family: var(--font-mono);
+      font-size: .6rem;
+      letter-spacing: .12em;
+      color: var(--muted);
+    }
+
+    /* ── ANIMATIONS ── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes scrollPulse {
+      0%, 100% { opacity: .4; }
+      50% { opacity: 1; }
+    }
+
+    @keyframes marqueeRoll {
+      from { transform: translateX(0); }
+      to   { transform: translateX(-50%); }
+    }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 900px) {
+      nav { padding: 16px 24px; }
+      nav ul { display: none; }
+
+      .product-card { flex: 0 0 calc(50% - 10px); }
+
+      .gallery-grid {
+        grid-template-columns: 1fr 1fr;
+        grid-auto-rows: 180px;
+      }
+      .g-1, .g-2, .g-3, .g-4, .g-5, .g-6 {
+        grid-column: span 1;
+        grid-row: span 1;
+      }
+
+      footer { padding: 24px; }
+    }
+
+    @media (max-width: 580px) {
+      .product-card { flex: 0 0 85vw; }
+      .gallery-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ─────────────────────────── NAV ─────────────────────────── -->
+<nav>
+  <img class="nav-logo" src="logo.png" alt="Zentra">
+  <ul>
+    <li><a href="#productos">Drops</a></li>
+    <li><a href="#galeria">Galería</a></li>
+    <li><a href="#contacto">Contacto</a></li>
+    <li>
+      <!-- CAMBIAR: reemplazá el número y el mensaje por defecto -->
+      <a class="nav-cta" href="https://wa.me/59812345678?text=Hola%20Zentra%2C%20quiero%20info%20sobre%20los%20drops" target="_blank">
+        ↗ WHATSAPP
+      </a>
+    </li>
+  </ul>
+</nav>
+
+<!-- ─────────────────────────── HERO ─────────────────────────── -->
+<section id="hero">
+  <p class="hero-eyebrow">// Nueva colección disponible</p>
+  <!-- CAMBIAR: apuntá src a tu logo real -->
+  <img class="hero-logo" src="logo.png" alt="Zentra">
+  <p class="hero-sub">
+    Piezas limitadas. Sin restocks.<br>
+    Diseño que habla antes que vos.
+  </p>
+  <div class="hero-actions">
+    <a class="btn-primary" href="#productos">Ver drops →</a>
+    <a class="btn-ghost" href="#galeria">Galería</a>
+  </div>
+  <div class="scroll-line"><span>SCROLL</span></div>
+</section>
+
+<!-- ─────────────────────────── VIDEO ─────────────────────────── -->
+<section id="video-section">
+  <p class="section-label">// Zentra en movimiento</p>
+  <h2 class="section-title">ATRÁS DE LA MARCA</h2>
+  <div class="video-wrapper">
+    <!--
+      OPCIÓN A — VIDEO LOCAL:
+      <video autoplay muted loop playsinline>
+        <source src="tu-video.mp4" type="video/mp4">
+      </video>
+
+      OPCIÓN B — YOUTUBE EMBED:
+      <iframe src="https://www.youtube.com/embed/TU_ID_AQUI?autoplay=1&mute=1&loop=1&playlist=TU_ID_AQUI" frameborder="0" allowfullscreen allow="autoplay"></iframe>
+
+      OPCIÓN C — PLACEHOLDER (activado por defecto):
+    -->
+    <div class="video-placeholder">
+      <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+        <circle cx="12" cy="12" r="10"/>
+        <polygon points="10 8 16 12 10 16 10 8" fill="currentColor" stroke="none"/>
+      </svg>
+      <span>// REEMPLAZÁ ESTE BLOQUE CON TU VIDEO</span>
+    </div>
+  </div>
+</section>
+
+<!-- ─────────────────────────── MARQUEE ─────────────────────────── -->
+<div class="marquee-wrap">
+  <div class="marquee-inner">
+    <!-- duplicado para loop sin corte -->
+    <span class="marquee-item">ZENTRA<span>✦</span></span>
+    <span class="marquee-item">STREETWEAR<span>✦</span></span>
+    <span class="marquee-item">DROP LIMITADO<span>✦</span></span>
+    <span class="marquee-item">SIN RESTOCKS<span>✦</span></span>
+    <span class="marquee-item">ZENTRA<span>✦</span></span>
+    <span class="marquee-item">STREETWEAR<span>✦</span></span>
+    <span class="marquee-item">DROP LIMITADO<span>✦</span></span>
+    <span class="marquee-item">SIN RESTOCKS<span>✦</span></span>
+    <span class="marquee-item">ZENTRA<span>✦</span></span>
+    <span class="marquee-item">STREETWEAR<span>✦</span></span>
+    <span class="marquee-item">DROP LIMITADO<span>✦</span></span>
+    <span class="marquee-item">SIN RESTOCKS<span>✦</span></span>
+    <span class="marquee-item">ZENTRA<span>✦</span></span>
+    <span class="marquee-item">STREETWEAR<span>✦</span></span>
+    <span class="marquee-item">DROP LIMITADO<span>✦</span></span>
+    <span class="marquee-item">SIN RESTOCKS<span>✦</span></span>
+  </div>
+</div>
+
+<!-- ─────────────────────────── CARRUSEL ─────────────────────────── -->
+<section id="productos">
+  <div class="carousel-header">
+    <div>
+      <p class="section-label">// Drops actuales</p>
+      <h2 class="section-title">LA COLECCIÓN</h2>
+    </div>
+    <div class="carousel-nav">
+      <button class="carr-btn" id="prevBtn" aria-label="Anterior">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <polyline points="15 18 9 12 15 6"/>
+        </svg>
+      </button>
+      <button class="carr-btn" id="nextBtn" aria-label="Siguiente">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <polyline points="9 18 15 12 9 6"/>
+        </svg>
+      </button>
+    </div>
+  </div>
+
+  <div class="carousel-track-wrap">
+    <div class="carousel-track" id="carouselTrack">
+
+      <!--
+        ══════════════════════════════════════════════════
+        INSTRUCCIONES PARA AGREGAR / EDITAR PRODUCTOS:
+
+        1. Copiá un bloque .product-card completo
+        2. Cambiá los campos:
+           - <img src="..."> → tu imagen del producto
+           - card-name → nombre del producto
+           - card-desc → descripción corta
+           - card-price → precio (ej: $4.900)
+           - wa-btn href → número WhatsApp + texto del mensaje
+             Formato: https://wa.me/NUMERO?text=MENSAJE_CODIFICADO
+             Para codificar el mensaje: usar %20 para espacios
+        3. El badge "NEW DROP" es opcional, quitalo si no aplica
+        ══════════════════════════════════════════════════
+      -->
+
+      <!-- PRODUCTO 1 -->
+      <div class="product-card">
+        <div class="card-img">
+          <!-- REEMPLAZÁ src por tu imagen -->
+          <div class="card-img-placeholder">[ IMAGEN PRODUCTO 1 ]</div>
+          <!-- <img src="producto1.jpg" alt="Hoodie Void"> -->
+          <span class="card-badge">NEW DROP</span>
+        </div>
+        <div class="card-body">
+          <h3 class="card-name">HOODIE VOID</h3>
+          <p class="card-desc">Corte oversized. Tela pesada 380gsm. Bordado frontal exclusivo. Tallas S — XL.</p>
+          <div class="card-footer">
+            <div class="card-price">
+              <small>PRECIO</small>
+              $4.900
+            </div>
+            <!-- CAMBIAR: número y mensaje -->
+            <a class="wa-btn"
+               href="https://wa.me/59812345678?text=Hola%20Zentra%21%20Quiero%20el%20Hoodie%20Void%20%E2%80%94%20precio%20%244.900"
+               target="_blank">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/>
+                <path d="M12 0C5.373 0 0 5.373 0 12c0 2.128.558 4.127 1.535 5.862L.057 23.882l6.186-1.622A11.93 11.93 0 0 0 12 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.894a9.877 9.877 0 0 1-5.031-1.375l-.361-.214-3.741.981.999-3.648-.235-.374A9.861 9.861 0 0 1 2.106 12C2.106 6.527 6.527 2.106 12 2.106S21.894 6.527 21.894 12 17.473 21.894 12 21.894z"/>
+              </svg>
+              PEDIR
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- PRODUCTO 2 -->
+      <div class="product-card">
+        <div class="card-img">
+          <div class="card-img-placeholder">[ IMAGEN PRODUCTO 2 ]</div>
+          <!-- <img src="producto2.jpg" alt="Tee Shadow"> -->
+        </div>
+        <div class="card-body">
+          <h3 class="card-name">TEE SHADOW</h3>
+          <p class="card-desc">100% algodón peinado. Estampado en serigrafía. Fit relajado. Negro / Blanco roto.</p>
+          <div class="card-footer">
+            <div class="card-price">
+              <small>PRECIO</small>
+              $2.200
+            </div>
+            <a class="wa-btn"
+               href="https://wa.me/59812345678?text=Hola%20Zentra%21%20Quiero%20la%20Tee%20Shadow%20%E2%80%94%20precio%20%242.200"
+               target="_blank">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/>
+                <path d="M12 0C5.373 0 0 5.373 0 12c0 2.128.558 4.127 1.535 5.862L.057 23.882l6.186-1.622A11.93 11.93 0 0 0 12 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.894a9.877 9.877 0 0 1-5.031-1.375l-.361-.214-3.741.981.999-3.648-.235-.374A9.861 9.861 0 0 1 2.106 12C2.106 6.527 6.527 2.106 12 2.106S21.894 6.527 21.894 12 17.473 21.894 12 21.894z"/>
+              </svg>
+              PEDIR
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- PRODUCTO 3 -->
+      <div class="product-card">
+        <div class="card-img">
+          <div class="card-img-placeholder">[ IMAGEN PRODUCTO 3 ]</div>
+          <!-- <img src="producto3.jpg" alt="Cap Grid"> -->
+          <span class="card-badge">ÚLTIMAS UNIDADES</span>
+        </div>
+        <div class="card-body">
+          <h3 class="card-name">CAP GRID</h3>
+          <p class="card-desc">6 paneles estructurados. Bordado 3D logo lateral. Ajuste snapback. Único color.</p>
+          <div class="card-footer">
+            <div class="card-price">
+              <small>PRECIO</small>
+              $1.800
+            </div>
+            <a class="wa-btn"
+               href="https://wa.me/59812345678?text=Hola%20Zentra%21%20Quiero%20la%20Cap%20Grid%20%E2%80%94%20precio%20%241.800"
+               target="_blank">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/>
+                <path d="M12 0C5.373 0 0 5.373 0 12c0 2.128.558 4.127 1.535 5.862L.057 23.882l6.186-1.622A11.93 11.93 0 0 0 12 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.894a9.877 9.877 0 0 1-5.031-1.375l-.361-.214-3.741.981.999-3.648-.235-.374A9.861 9.861 0 0 1 2.106 12C2.106 6.527 6.527 2.106 12 2.106S21.894 6.527 21.894 12 17.473 21.894 12 21.894z"/>
+              </svg>
+              PEDIR
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- PRODUCTO 4 (ejemplo extra) -->
+      <div class="product-card">
+        <div class="card-img">
+          <div class="card-img-placeholder">[ IMAGEN PRODUCTO 4 ]</div>
+        </div>
+        <div class="card-body">
+          <h3 class="card-name">CARGO ZENTRA</h3>
+          <p class="card-desc">Pantalón cargo táctico. Bolsillos laterales funcionales. Tela ripstop. Negro / Militar.</p>
+          <div class="card-footer">
+            <div class="card-price">
+              <small>PRECIO</small>
+              $6.500
+            </div>
+            <a class="wa-btn"
+               href="https://wa.me/59812345678?text=Hola%20Zentra%21%20Quiero%20el%20Cargo%20Zentra%20%E2%80%94%20precio%20%246.500"
+               target="_blank">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/>
+                <path d="M12 0C5.373 0 0 5.373 0 12c0 2.128.558 4.127 1.535 5.862L.057 23.882l6.186-1.622A11.93 11.93 0 0 0 12 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.894a9.877 9.877 0 0 1-5.031-1.375l-.361-.214-3.741.981.999-3.648-.235-.374A9.861 9.861 0 0 1 2.106 12C2.106 6.527 6.527 2.106 12 2.106S21.894 6.527 21.894 12 17.473 21.894 12 21.894z"/>
+              </svg>
+              PEDIR
+            </a>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /carousel-track -->
+  </div><!-- /carousel-track-wrap -->
+</section>
+
+<!-- ─────────────────────────── GALERÍA ─────────────────────────── -->
+<section id="galeria">
+  <p class="section-label">// La estética</p>
+  <h2 class="section-title">GALERÍA</h2>
+  <div class="gallery-grid">
+    <!--
+      INSTRUCCIONES GALERÍA:
+      Reemplazá cada <div class="g-item-placeholder"> con una etiqueta <img>:
+      <img src="foto1.jpg" alt="descripción">
+    -->
+    <div class="g-item g-1">
+      <div class="g-item-placeholder">IMAGEN 1<br><span style="font-size:.5rem;color:#374151">[ grande ]</span></div>
+    </div>
+    <div class="g-item g-2">
+      <div class="g-item-placeholder">IMAGEN 2</div>
+    </div>
+    <div class="g-item g-3">
+      <div class="g-item-placeholder">IMAGEN 3</div>
+    </div>
+    <div class="g-item g-4">
+      <div class="g-item-placeholder">IMAGEN 4</div>
+    </div>
+    <div class="g-item g-5">
+      <div class="g-item-placeholder">IMAGEN 5</div>
+    </div>
+    <div class="g-item g-6">
+      <div class="g-item-placeholder">IMAGEN 6<br><span style="font-size:.5rem;color:#374151">[ ancha ]</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ─────────────────────────── CTA FINAL ─────────────────────────── -->
+<section id="contacto">
+  <p class="section-label">// Entrá al canal</p>
+  <h2 class="section-title">¿LISTO PARA EL DROP?</h2>
+  <p>Stock limitado. Sin segunda oportunidad.<br>Escribinos y asegurá el tuyo antes que nadie.</p>
+  <!-- CAMBIAR: número WhatsApp -->
+  <a class="btn-primary"
+     href="https://wa.me/59812345678?text=Hola%20Zentra%21%20Quiero%20info%20sobre%20los%20drops%20actuales"
+     target="_blank"
+     style="font-size:.85rem; padding:16px 40px; margin: 0 auto;">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+      <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/>
+      <path d="M12 0C5.373 0 0 5.373 0 12c0 2.128.558 4.127 1.535 5.862L.057 23.882l6.186-1.622A11.93 11.93 0 0 0 12 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.894a9.877 9.877 0 0 1-5.031-1.375l-.361-.214-3.741.981.999-3.648-.235-.374A9.861 9.861 0 0 1 2.106 12C2.106 6.527 6.527 2.106 12 2.106S21.894 6.527 21.894 12 17.473 21.894 12 21.894z"/>
+    </svg>
+    ESCRIBIR POR WHATSAPP
+  </a>
+</section>
+
+<!-- ─────────────────────────── FOOTER ─────────────────────────── -->
+<footer>
+  <img src="logo.png" alt="Zentra">
+  <p>© 2025 ZENTRA — TODOS LOS DERECHOS RESERVADOS</p>
+  <p style="color:#374151;">HECHO EN UY 🇺🇾</p>
+</footer>
+
+<!-- ─────────────────────────── JS CARRUSEL ─────────────────────────── -->
+<script>
+  const track   = document.getElementById('carouselTrack');
+  const prevBtn = document.getElementById('prevBtn');
+  const nextBtn = document.getElementById('nextBtn');
+  let current = 0;
+
+  function getVisible() {
+    if (window.innerWidth < 580) return 1;
+    if (window.innerWidth < 900) return 2;
+    return 3;
+  }
+
+  function getCardWidth() {
+    const card = track.querySelector('.product-card');
+    return card ? card.offsetWidth + 20 : 300; // 20 = gap
+  }
+
+  function goTo(idx) {
+    const total   = track.querySelectorAll('.product-card').length;
+    const visible = getVisible();
+    const max     = total - visible;
+    current = Math.max(0, Math.min(idx, max));
+    track.style.transform = `translateX(-${current * getCardWidth()}px)`;
+  }
+
+  prevBtn.addEventListener('click', () => goTo(current - 1));
+  nextBtn.addEventListener('click', () => goTo(current + 1));
+  window.addEventListener('resize', () => goTo(current));
+
+  // Touch / swipe
+  let touchStartX = 0;
+  track.addEventListener('touchstart', e => { touchStartX = e.touches[0].clientX; }, { passive: true });
+  track.addEventListener('touchend',   e => {
+    const dx = touchStartX - e.changedTouches[0].clientX;
+    if (Math.abs(dx) > 50) goTo(current + (dx > 0 ? 1 : -1));
+  });
+</script>
+
+</body>
+</html>
