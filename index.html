@@ -976,6 +976,131 @@
       .zp-left { gap: 8px; }
       .zp-art { width: 36px; height: 36px; }
     }
+
+    /* ── ZOOM MODAL ── */
+    .zoom-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 1000;
+      background: rgba(0,0,0,.92);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity .25s;
+      backdrop-filter: blur(8px);
+    }
+
+    .zoom-overlay.active {
+      opacity: 1;
+      pointer-events: all;
+    }
+
+    .zoom-inner {
+      position: relative;
+      max-width: min(90vw, 800px);
+      max-height: 90vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .zoom-slides {
+      display: flex;
+      transition: transform .4s cubic-bezier(.25,.46,.45,.94);
+    }
+
+    .zoom-slide {
+      flex: 0 0 min(90vw, 800px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .zoom-slide img {
+      max-width: min(90vw, 800px);
+      max-height: 85vh;
+      object-fit: contain;
+      border-radius: 4px;
+      user-select: none;
+    }
+
+    .zoom-close {
+      position: fixed;
+      top: 20px;
+      right: 24px;
+      background: rgba(255,255,255,.1);
+      border: 1px solid rgba(255,255,255,.15);
+      color: #fff;
+      width: 40px;
+      height: 40px;
+      border-radius: 2px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-size: 1.2rem;
+      transition: background .2s;
+      z-index: 10;
+    }
+    .zoom-close:hover { background: rgba(255,255,255,.2); }
+
+    .zoom-prev,
+    .zoom-next {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      background: rgba(0,0,0,.5);
+      border: 1px solid rgba(255,255,255,.15);
+      color: #fff;
+      width: 44px;
+      height: 44px;
+      border-radius: 2px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: background .2s, border-color .2s;
+      z-index: 10;
+    }
+    .zoom-prev { left: -60px; }
+    .zoom-next { right: -60px; }
+    .zoom-prev:hover, .zoom-next:hover { background: rgba(59,130,246,.5); border-color: var(--accent); }
+    .zoom-prev svg, .zoom-next svg { width: 20px; height: 20px; }
+
+    .zoom-dots {
+      position: fixed;
+      bottom: 24px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      gap: 8px;
+    }
+
+    .zoom-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: rgba(255,255,255,.3);
+      cursor: pointer;
+      transition: background .2s, transform .2s;
+    }
+    .zoom-dot.active { background: #fff; transform: scale(1.3); }
+
+    .zoom-counter {
+      position: fixed;
+      bottom: 52px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-family: var(--font-mono);
+      font-size: .6rem;
+      letter-spacing: .15em;
+      color: rgba(255,255,255,.4);
+    }
+
+    /* cursor pointer en imágenes del carrusel */
+    .card-slide img { cursor: zoom-in; }
   </style>
 </head>
 <body>
@@ -1102,30 +1227,33 @@
 
       <!-- ══ PRODUCTO 1: BAGGY JEAN BLACK ══ -->
       <div class="product-card">
-        <div class="card-img" data-total="2">
-          <!-- CARRUSEL DE IMÁGENES: agregá o quitá card-slide según cuántas fotos tengas -->
+        <div class="card-img" data-total="4">
           <div class="card-slides">
             <div class="card-slide">
-              <img src="Pantalonnegro.jpeg" alt="Baggy Jean Black — frente">
+              <img src="Pantalonnegro.jpeg" alt="Baggy Jean Black — foto 1" class="zoomable">
             </div>
             <div class="card-slide">
-              <!-- Segunda foto del producto — reemplazá src -->
-              <img src="Pantalonnegro.jpeg" alt="Baggy Jean Black — detalle">
+              <img src="Pantalonnegro.jpeg" alt="Baggy Jean Black — foto 2" class="zoomable">
+            </div>
+            <div class="card-slide">
+              <img src="Pantalonnegro.jpeg" alt="Baggy Jean Black — foto 3" class="zoomable">
+            </div>
+            <div class="card-slide">
+              <img src="Pantalonnegro.jpeg" alt="Baggy Jean Black — foto 4" class="zoomable">
             </div>
           </div>
-          <!-- Flechas internas -->
           <button class="card-img-prev" aria-label="Foto anterior">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>
           </button>
           <button class="card-img-next" aria-label="Foto siguiente">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
           </button>
-          <!-- Dots de navegación -->
           <div class="card-img-dots">
             <div class="card-img-dot active"></div>
             <div class="card-img-dot"></div>
+            <div class="card-img-dot"></div>
+            <div class="card-img-dot"></div>
           </div>
-          <!-- Badges -->
           <div class="card-badges">
             <span class="card-badge">NEW DROP</span>
           </div>
@@ -1158,18 +1286,19 @@
 
       <!-- ══ PRODUCTO 2: BAGGY JEAN CLARO (con descuento de ejemplo) ══ -->
       <div class="product-card">
-        <div class="card-img" data-total="3">
+        <div class="card-img" data-total="4">
           <div class="card-slides">
             <div class="card-slide">
-              <img src="baggybl.png" alt="Baggy Jean Claro — frente">
+              <img src="baggybl.png" alt="Baggy Jean Claro — foto 1" class="zoomable">
             </div>
             <div class="card-slide">
-              <!-- Reemplazá src por segunda foto -->
-              <img src="baggybl.png" alt="Baggy Jean Claro — lateral">
+              <img src="baggybl.png" alt="Baggy Jean Claro — foto 2" class="zoomable">
             </div>
             <div class="card-slide">
-              <!-- Reemplazá src por tercera foto -->
-              <img src="baggybl.png" alt="Baggy Jean Claro — detalle">
+              <img src="baggybl.png" alt="Baggy Jean Claro — foto 3" class="zoomable">
+            </div>
+            <div class="card-slide">
+              <img src="baggybl.png" alt="Baggy Jean Claro — foto 4" class="zoomable">
             </div>
           </div>
           <button class="card-img-prev" aria-label="Foto anterior">
@@ -1180,6 +1309,7 @@
           </button>
           <div class="card-img-dots">
             <div class="card-img-dot active"></div>
+            <div class="card-img-dot"></div>
             <div class="card-img-dot"></div>
             <div class="card-img-dot"></div>
           </div>
@@ -1709,6 +1839,120 @@
     document.addEventListener('touchstart', unlockAudio, { passive: true });
   }
 
+})();
+</script>
+
+<!-- ─────────────────────────── ZOOM MODAL ─────────────────────────── -->
+<div class="zoom-overlay" id="zoomOverlay">
+  <button class="zoom-close" id="zoomClose">✕</button>
+  <div class="zoom-inner">
+    <button class="zoom-prev" id="zoomPrev">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
+    </button>
+    <div style="overflow:hidden; max-width: min(90vw,800px);">
+      <div class="zoom-slides" id="zoomSlides"></div>
+    </div>
+    <button class="zoom-next" id="zoomNext">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+    </button>
+  </div>
+  <div class="zoom-counter" id="zoomCounter"></div>
+  <div class="zoom-dots" id="zoomDots"></div>
+</div>
+
+<script>
+(function () {
+  const overlay   = document.getElementById('zoomOverlay');
+  const closeBtn  = document.getElementById('zoomClose');
+  const slidesEl  = document.getElementById('zoomSlides');
+  const dotsEl    = document.getElementById('zoomDots');
+  const counterEl = document.getElementById('zoomCounter');
+  const prevBtn   = document.getElementById('zoomPrev');
+  const nextBtn   = document.getElementById('zoomNext');
+
+  let images  = [];
+  let current = 0;
+
+  function openZoom(imgs, startIdx) {
+    images  = imgs;
+    current = startIdx;
+
+    // Construir slides
+    slidesEl.innerHTML = '';
+    dotsEl.innerHTML   = '';
+
+    images.forEach(function (src, i) {
+      const slide = document.createElement('div');
+      slide.className = 'zoom-slide';
+      const img = document.createElement('img');
+      img.src = src;
+      img.draggable = false;
+      slide.appendChild(img);
+      slidesEl.appendChild(slide);
+
+      const dot = document.createElement('div');
+      dot.className = 'zoom-dot' + (i === startIdx ? ' active' : '');
+      dot.addEventListener('click', function () { goTo(i); });
+      dotsEl.appendChild(dot);
+    });
+
+    // Ocultar flechas y dots si solo hay 1 imagen
+    prevBtn.style.display  = images.length > 1 ? '' : 'none';
+    nextBtn.style.display  = images.length > 1 ? '' : 'none';
+    dotsEl.style.display   = images.length > 1 ? '' : 'none';
+
+    goTo(current, false);
+    overlay.classList.add('active');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function goTo(idx, animate) {
+    current = ((idx % images.length) + images.length) % images.length;
+    slidesEl.style.transition = animate === false ? 'none' : 'transform .4s cubic-bezier(.25,.46,.45,.94)';
+    slidesEl.style.transform  = `translateX(-${current * slidesEl.parentElement.offsetWidth}px)`;
+    dotsEl.querySelectorAll('.zoom-dot').forEach(function (d, i) {
+      d.classList.toggle('active', i === current);
+    });
+    counterEl.textContent = (current + 1) + ' / ' + images.length;
+  }
+
+  function closeZoom() {
+    overlay.classList.remove('active');
+    document.body.style.overflow = '';
+  }
+
+  prevBtn.addEventListener('click', function () { goTo(current - 1); });
+  nextBtn.addEventListener('click', function () { goTo(current + 1); });
+  closeBtn.addEventListener('click', closeZoom);
+  overlay.addEventListener('click', function (e) {
+    if (e.target === overlay) closeZoom();
+  });
+
+  // Teclado
+  document.addEventListener('keydown', function (e) {
+    if (!overlay.classList.contains('active')) return;
+    if (e.key === 'Escape')     closeZoom();
+    if (e.key === 'ArrowRight') goTo(current + 1);
+    if (e.key === 'ArrowLeft')  goTo(current - 1);
+  });
+
+  // Swipe en el modal
+  let touchStart = 0;
+  slidesEl.addEventListener('touchstart', function (e) { touchStart = e.touches[0].clientX; }, { passive: true });
+  slidesEl.addEventListener('touchend', function (e) {
+    const dx = touchStart - e.changedTouches[0].clientX;
+    if (Math.abs(dx) > 40) goTo(current + (dx > 0 ? 1 : -1));
+  });
+
+  // Conectar cada imagen al zoom
+  document.querySelectorAll('.card-slide img.zoomable').forEach(function (img) {
+    img.addEventListener('click', function () {
+      const cardImg   = img.closest('.card-img');
+      const allImgs   = Array.from(cardImg.querySelectorAll('.card-slide img')).map(function (i) { return i.src; });
+      const clickedIdx = Array.from(cardImg.querySelectorAll('.card-slide img')).indexOf(img);
+      openZoom(allImgs, clickedIdx);
+    });
+  });
 })();
 </script>
 
