@@ -257,7 +257,6 @@
       display: block;
     }
 
-    /* placeholder for when no video is set */
     .video-placeholder {
       position: absolute;
       inset: 0;
@@ -274,7 +273,7 @@
 
     .video-placeholder svg { opacity: .3; }
 
-    /* ── CARRUSEL ── */
+    /* ── CARRUSEL PRINCIPAL ── */
     #productos {
       padding: 100px 24px;
     }
@@ -323,7 +322,9 @@
       transition: transform .45s cubic-bezier(.25,.46,.45,.94);
     }
 
-    /* ── PRODUCT CARD ── */
+    /* ══════════════════════════════════════════
+       PRODUCT CARD — NUEVA VERSIÓN
+    ══════════════════════════════════════════ */
     .product-card {
       flex: 0 0 calc(33.333% - 14px);
       min-width: 280px;
@@ -341,6 +342,7 @@
       border-color: rgba(59,130,246,.4);
     }
 
+    /* ── CARRUSEL DE IMÁGENES POR PRODUCTO ── */
     .card-img {
       aspect-ratio: 1/1;
       background: #141414;
@@ -348,16 +350,91 @@
       position: relative;
     }
 
-    .card-img img {
+    /* Slides container */
+    .card-slides {
+      display: flex;
+      height: 100%;
+      transition: transform .4s cubic-bezier(.25,.46,.45,.94);
+    }
+
+    .card-slide {
+      flex: 0 0 100%;
+      height: 100%;
+      overflow: hidden;
+    }
+
+    .card-slide img {
       width: 100%;
       height: 100%;
       object-fit: cover;
       transition: transform .5s ease;
+      display: block;
     }
 
-    .product-card:hover .card-img img { transform: scale(1.05); }
+    .product-card:hover .card-slide img { transform: scale(1.05); }
 
-    /* placeholder when no image */
+    /* Flechas del carrusel interno */
+    .card-img-prev,
+    .card-img-next {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      z-index: 10;
+      background: rgba(0,0,0,.55);
+      border: 1px solid rgba(255,255,255,.12);
+      color: #fff;
+      width: 30px;
+      height: 30px;
+      border-radius: 2px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      opacity: 0;
+      transition: opacity .2s, background .2s;
+      backdrop-filter: blur(4px);
+    }
+    .card-img-prev { left: 10px; }
+    .card-img-next { right: 10px; }
+    .card-img-prev svg, .card-img-next svg { width: 14px; height: 14px; }
+    .card-img-prev:hover, .card-img-next:hover { background: rgba(59,130,246,.7); }
+
+    .card-img:hover .card-img-prev,
+    .card-img:hover .card-img-next { opacity: 1; }
+
+    /* Ocultar flechas si solo hay 1 imagen */
+    .card-img[data-total="1"] .card-img-prev,
+    .card-img[data-total="1"] .card-img-next { display: none; }
+
+    /* Dots del carrusel interno */
+    .card-img-dots {
+      position: absolute;
+      bottom: 10px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      gap: 5px;
+      z-index: 10;
+    }
+
+    .card-img-dot {
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      background: rgba(255,255,255,.35);
+      cursor: pointer;
+      transition: background .2s, transform .2s;
+    }
+
+    .card-img-dot.active {
+      background: #fff;
+      transform: scale(1.3);
+    }
+
+    /* Ocultar dots si solo hay 1 imagen */
+    .card-img[data-total="1"] .card-img-dots { display: none; }
+
+    /* placeholder cuando no hay imagen */
     .card-img-placeholder {
       width: 100%;
       height: 100%;
@@ -370,10 +447,19 @@
       letter-spacing: .1em;
     }
 
-    .card-badge {
+    /* ── BADGES (NEW DROP / DESCUENTO) ── */
+    .card-badges {
       position: absolute;
       top: 14px;
       left: 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+      z-index: 5;
+    }
+
+    .card-badge {
+      display: inline-block;
       background: var(--accent);
       color: #fff;
       font-family: var(--font-mono);
@@ -383,11 +469,17 @@
       border-radius: 2px;
     }
 
+    /* Badge de descuento — rojo/naranja */
+    .card-badge.discount {
+      background: #EF4444;
+    }
+
+    /* ── BODY DE LA CARD ── */
     .card-body {
       padding: 22px;
       display: flex;
       flex-direction: column;
-      gap: 12px;
+      gap: 10px;
       flex: 1;
     }
 
@@ -405,11 +497,45 @@
       flex: 1;
     }
 
+    /* ── STOCK INDICATOR ── */
+    .card-stock {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      font-family: var(--font-mono);
+      font-size: .6rem;
+      letter-spacing: .08em;
+    }
+
+    .stock-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    /* Colores según stock */
+    .stock-high   .stock-dot { background: #22C55E; box-shadow: 0 0 6px rgba(34,197,94,.6); }
+    .stock-mid    .stock-dot { background: #F59E0B; box-shadow: 0 0 6px rgba(245,158,11,.6); }
+    .stock-low    .stock-dot { background: #EF4444; box-shadow: 0 0 6px rgba(239,68,68,.6); animation: stockPulse 1.2s ease-in-out infinite; }
+    .stock-none   .stock-dot { background: var(--muted); }
+
+    .stock-high   .stock-text { color: #22C55E; }
+    .stock-mid    .stock-text { color: #F59E0B; }
+    .stock-low    .stock-text { color: #EF4444; }
+    .stock-none   .stock-text { color: var(--muted); }
+
+    @keyframes stockPulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: .4; }
+    }
+
+    /* ── PRECIO ── */
     .card-footer {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      margin-top: 8px;
+      margin-top: 4px;
     }
 
     .card-price {
@@ -426,6 +552,20 @@
       margin-bottom: 2px;
     }
 
+    /* Precio tachado (precio original cuando hay descuento) */
+    .card-price .price-original {
+      font-size: .7rem;
+      color: var(--muted);
+      text-decoration: line-through;
+      display: block;
+      margin-bottom: 1px;
+    }
+
+    .card-price .price-sale {
+      color: #EF4444;
+    }
+
+    /* Botón WhatsApp */
     .wa-btn {
       display: inline-flex;
       align-items: center;
@@ -442,6 +582,14 @@
       transition: background .2s;
     }
     .wa-btn:hover { background: var(--accent2); }
+
+    /* Botón deshabilitado cuando no hay stock */
+    .wa-btn.disabled {
+      background: var(--muted);
+      cursor: not-allowed;
+      pointer-events: none;
+      opacity: .5;
+    }
 
     /* ── GALLERY GRID ── */
     #galeria {
@@ -614,7 +762,7 @@
     }
 
     /* ── MUSIC PLAYER ── */
-    body { padding-bottom: 76px; } /* room for fixed player */
+    body { padding-bottom: 76px; }
 
     .zplayer {
       position: fixed;
@@ -631,7 +779,6 @@
       gap: 16px;
     }
 
-    /* progress bar sits on top edge of player */
     .zp-progress-wrap {
       position: absolute;
       top: -2px; left: 0; right: 0;
@@ -672,7 +819,6 @@
     .zp-progress-wrap:hover .zp-progress-thumb { opacity: 1; }
     .zp-progress-wrap:hover .zp-progress-bg { height: 4px; }
 
-    /* LEFT */
     .zp-left {
       display: flex;
       align-items: center;
@@ -723,7 +869,6 @@
       text-transform: uppercase;
     }
 
-    /* CENTER */
     .zp-center {
       display: flex;
       align-items: center;
@@ -759,7 +904,6 @@
     .zp-play svg { width: 20px; height: 20px; }
     .zp-play:hover { border-color: var(--accent); background: rgba(59,130,246,.1); transform: scale(1.05); }
 
-    /* RIGHT */
     .zp-right {
       display: flex;
       align-items: center;
@@ -802,7 +946,6 @@
       box-shadow: 0 0 4px rgba(0,0,0,.5);
     }
 
-    /* load hint pulsing dot */
     .zp-load-hint {
       position: absolute;
       right: 24px;
@@ -845,7 +988,6 @@
     <li><a href="#galeria">Galería</a></li>
     <li><a href="#contacto">Contacto</a></li>
     <li>
-      <!-- CAMBIAR: reemplazá el número y el mensaje por defecto -->
       <a class="nav-cta" href="https://wa.me/59894899706?text=Hola%20Zentra%2C%20quiero%20info%20sobre%20los%20drops" target="_blank">
         ↗ WHATSAPP
       </a>
@@ -856,7 +998,6 @@
 <!-- ─────────────────────────── HERO ─────────────────────────── -->
 <section id="hero">
   <p class="hero-eyebrow">// Nueva colección disponible</p>
-  <!-- CAMBIAR: apuntá src a tu logo real -->
   <img class="hero-logo" src="logo.png" alt="Zentra">
   <p class="hero-sub">
     Piezas limitadas. Sin restocks.<br>
@@ -874,17 +1015,6 @@
   <p class="section-label">// Zentra en movimiento</p>
   <h2 class="section-title">ATRÁS DE LA MARCA</h2>
   <div class="video-wrapper">
-    <!--
-      OPCIÓN A — VIDEO LOCAL:
-      <video autoplay muted loop playsinline>
-        <source src="tu-video.mp4" type="video/mp4">
-      </video>
-
-      OPCIÓN B — YOUTUBE EMBED:
-      <iframe src="https://www.youtube.com/embed/TU_ID_AQUI?autoplay=1&mute=1&loop=1&playlist=TU_ID_AQUI" frameborder="0" allowfullscreen allow="autoplay"></iframe>
-
-      OPCIÓN C — PLACEHOLDER (activado por defecto):
-    -->
     <div class="video-placeholder">
       <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
         <circle cx="12" cy="12" r="10"/>
@@ -900,7 +1030,6 @@
 <!-- ─────────────────────────── MARQUEE ─────────────────────────── -->
 <div class="marquee-wrap">
   <div class="marquee-inner">
-    <!-- duplicado para loop sin corte -->
     <span class="marquee-item">ZENTRA<span>✦</span></span>
     <span class="marquee-item">STREETWEAR<span>✦</span></span>
     <span class="marquee-item">DROP LIMITADO<span>✦</span></span>
@@ -920,7 +1049,7 @@
   </div>
 </div>
 
-<!-- ─────────────────────────── CARRUSEL ─────────────────────────── -->
+<!-- ─────────────────────────── CARRUSEL PRODUCTOS ─────────────────────────── -->
 <section id="productos">
   <div class="carousel-header">
     <div>
@@ -945,41 +1074,77 @@
     <div class="carousel-track" id="carouselTrack">
 
       <!--
-        ══════════════════════════════════════════════════
-        INSTRUCCIONES PARA AGREGAR / EDITAR PRODUCTOS:
+        ══════════════════════════════════════════════════════════════
+        CÓMO CONFIGURAR CADA PRODUCTO:
 
-        1. Copiá un bloque .product-card completo
-        2. Cambiá los campos:
-           - <img src="..."> → tu imagen del producto
-           - card-name → nombre del producto
-           - card-desc → descripción corta
-           - card-price → precio (ej: $4.900)
-           - wa-btn href → número WhatsApp + texto del mensaje
-             Formato: https://wa.me/NUMERO?text=MENSAJE_CODIFICADO
-             Para codificar el mensaje: usar %20 para espacios
-        3. El badge "NEW DROP" es opcional, quitalo si no aplica
-        ══════════════════════════════════════════════════
+        IMÁGENES MÚLTIPLES:
+        → Agregá tantos <div class="card-slide"> como fotos quieras
+        → Actualizá data-total="N" con el número total de imágenes
+
+        BADGES:
+        → NEW DROP: <span class="card-badge">NEW DROP</span>
+        → DESCUENTO: <span class="card-badge discount">-20%</span>
+        → Podés poner los dos juntos
+
+        PRECIO CON DESCUENTO:
+        → Mostrá el precio original tachado y el precio rebajado:
+          <span class="price-original">UYU$2.000</span>
+          <span class="price-sale">UYU$1.600</span>
+
+        STOCK:
+        → Muchas unidades:  class="card-stock stock-high"  → texto ej: "10 unidades disponibles"
+        → Pocas unidades:   class="card-stock stock-mid"   → texto ej: "3 unidades disponibles"
+        → Últimas unidades: class="card-stock stock-low"   → texto ej: "¡Última unidad!"
+        → Sin stock:        class="card-stock stock-none"  → texto ej: "Sin stock"
+          (también cambiá el wa-btn a class="wa-btn disabled" y href="#")
+        ══════════════════════════════════════════════════════════════
       -->
 
-      <!-- PRODUCTO 1 -->
+      <!-- ══ PRODUCTO 1: BAGGY JEAN BLACK ══ -->
       <div class="product-card">
-        <div class="card-img">
-          <!-- REEMPLAZÁ src por tu imagen -->
-          <div class="card-img-placeholder"><img src="Pantalonnegro.jpeg" alt="Pantalón Negro"></div>
-          <!-- <img src="producto1.jpg" alt="Baggy Jean BLACK"> -->
-          <span class="card-badge">NEW DROP</span>
+        <div class="card-img" data-total="2">
+          <!-- CARRUSEL DE IMÁGENES: agregá o quitá card-slide según cuántas fotos tengas -->
+          <div class="card-slides">
+            <div class="card-slide">
+              <img src="Pantalonnegro.jpeg" alt="Baggy Jean Black — frente">
+            </div>
+            <div class="card-slide">
+              <!-- Segunda foto del producto — reemplazá src -->
+              <img src="Pantalonnegro.jpeg" alt="Baggy Jean Black — detalle">
+            </div>
+          </div>
+          <!-- Flechas internas -->
+          <button class="card-img-prev" aria-label="Foto anterior">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>
+          </button>
+          <button class="card-img-next" aria-label="Foto siguiente">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
+          </button>
+          <!-- Dots de navegación -->
+          <div class="card-img-dots">
+            <div class="card-img-dot active"></div>
+            <div class="card-img-dot"></div>
+          </div>
+          <!-- Badges -->
+          <div class="card-badges">
+            <span class="card-badge">NEW DROP</span>
+          </div>
         </div>
         <div class="card-body">
           <h3 class="card-name">BAGGY JEAN BLACK</h3>
-          <p class="card-desc">Corte oversized. Tela pesada   Talles 28—34.</p>
+          <p class="card-desc">Corte oversized. Tela pesada. Talles 28—34.</p>
+          <!-- STOCK: cambiá la clase según las unidades disponibles -->
+          <div class="card-stock stock-mid">
+            <div class="stock-dot"></div>
+            <span class="stock-text">4 unidades disponibles</span>
+          </div>
           <div class="card-footer">
             <div class="card-price">
               <small>PRECIO</small>
               UYU$1.690
             </div>
-            <!-- CAMBIAR: número y mensaje -->
             <a class="wa-btn"
-               href="https://wa.me/59894899706?text=Hola%20quiero%20el%20Jean%20Baggy%20Negro,%20me%20podes%20decir%20los%20talles%20dispoibles"
+               href="https://wa.me/59894899706?text=Hola%20quiero%20el%20Jean%20Baggy%20Negro,%20me%20podes%20decir%20los%20talles%20disponibles"
                target="_blank">
               <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
                 <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/>
@@ -991,23 +1156,63 @@
         </div>
       </div>
 
-      <!-- PRODUCTO 2 -->
+      <!-- ══ PRODUCTO 2: BAGGY JEAN CLARO (con descuento de ejemplo) ══ -->
       <div class="product-card">
-        <div class="card-img">
-          <div class="card-img-placeholder"><img src="baggybl.png" alt="Pantalón Claro"></div>
-          <!-- <img src="producto2.jpg" alt="Tee Shadow"> -->
-           <span class="card-badge">HEW DROP</span>
+        <div class="card-img" data-total="3">
+          <div class="card-slides">
+            <div class="card-slide">
+              <img src="baggybl.png" alt="Baggy Jean Claro — frente">
+            </div>
+            <div class="card-slide">
+              <!-- Reemplazá src por segunda foto -->
+              <img src="baggybl.png" alt="Baggy Jean Claro — lateral">
+            </div>
+            <div class="card-slide">
+              <!-- Reemplazá src por tercera foto -->
+              <img src="baggybl.png" alt="Baggy Jean Claro — detalle">
+            </div>
+          </div>
+          <button class="card-img-prev" aria-label="Foto anterior">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>
+          </button>
+          <button class="card-img-next" aria-label="Foto siguiente">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
+          </button>
+          <div class="card-img-dots">
+            <div class="card-img-dot active"></div>
+            <div class="card-img-dot"></div>
+            <div class="card-img-dot"></div>
+          </div>
+          <div class="card-badges">
+            <span class="card-badge">NEW DROP</span>
+            <!-- DESCUENTO: descomentá la línea de abajo para mostrar badge de descuento -->
+            <!-- <span class="card-badge discount">-15%</span> -->
+          </div>
         </div>
         <div class="card-body">
           <h3 class="card-name">BAGGY JEAN CLARO</h3>
           <p class="card-desc">Corte oversized. Tela pesada. Talles 28—34.</p>
+          <div class="card-stock stock-high">
+            <div class="stock-dot"></div>
+            <span class="stock-text">8 unidades disponibles</span>
+          </div>
           <div class="card-footer">
             <div class="card-price">
               <small>PRECIO</small>
+              <!--
+                PRECIO NORMAL:
+                UYU$1.690
+
+                PRECIO CON DESCUENTO (descomentá y completá):
+              -->
               UYU$1.690
+              <!--
+              <span class="price-original">UYU$1.990</span>
+              <span class="price-sale">UYU$1.690</span>
+              -->
             </div>
             <a class="wa-btn"
-               href="https://wa.me/59894899706?text=Hola%20quiero%20comprar%20el%20Baggu%20Jean%20Claro,%20que%20talles%20tienen%20disponibles"
+               href="https://wa.me/59894899706?text=Hola%20quiero%20comprar%20el%20Baggy%20Jean%20Claro,%20que%20talles%20tienen%20disponibles"
                target="_blank">
               <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
                 <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/>
@@ -1019,9 +1224,50 @@
         </div>
       </div>
 
-      
+      <!--
+        ══ EJEMPLO: PRODUCTO SIN STOCK ══
+        Descomentá este bloque para ver cómo queda un producto agotado
 
-      
+      <div class="product-card">
+        <div class="card-img" data-total="1">
+          <div class="card-slides">
+            <div class="card-slide">
+              <img src="producto.jpg" alt="Producto agotado">
+            </div>
+          </div>
+          <button class="card-img-prev" aria-label="Foto anterior">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>
+          </button>
+          <button class="card-img-next" aria-label="Foto siguiente">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
+          </button>
+          <div class="card-img-dots">
+            <div class="card-img-dot active"></div>
+          </div>
+          <div class="card-badges">
+            <span class="card-badge discount">AGOTADO</span>
+          </div>
+        </div>
+        <div class="card-body">
+          <h3 class="card-name">NOMBRE PRODUCTO</h3>
+          <p class="card-desc">Descripción del producto.</p>
+          <div class="card-stock stock-none">
+            <div class="stock-dot"></div>
+            <span class="stock-text">Sin stock</span>
+          </div>
+          <div class="card-footer">
+            <div class="card-price">
+              <small>PRECIO</small>
+              UYU$1.690
+            </div>
+            <a class="wa-btn disabled" href="#" aria-disabled="true">
+              SIN STOCK
+            </a>
+          </div>
+        </div>
+      </div>
+      -->
+
     </div><!-- /carousel-track -->
   </div><!-- /carousel-track-wrap -->
 </section>
@@ -1031,28 +1277,23 @@
   <p class="section-label">// La estética</p>
   <h2 class="section-title">GALERÍA</h2>
   <div class="gallery-grid">
-    <!--
-      INSTRUCCIONES GALERÍA:
-      Reemplazá cada <div class="g-item-placeholder"> con una etiqueta <img>:
-      <img src="foto1.jpg" alt="descripción">
-    -->
     <div class="g-item g-1">
-      <div class="g-item-placeholder"><img src="giulicolgando.PNG" alt="descripción"><br><span style="font-size:.5rem;color:#374151"></span></div>
+      <div class="g-item-placeholder"><img src="giulicolgando.PNG" alt="descripción"></div>
     </div>
     <div class="g-item g-2">
-      <div class="g-item-placeholder"><img src="tomitirado.jpg" alt="descripción"><br><span style="font-size:.5rem;color:#374151"></span></div>
+      <div class="g-item-placeholder"><img src="tomitirado.jpg" alt="descripción"></div>
     </div>
     <div class="g-item g-3">
-      <div class="g-item-placeholder"><img src="giuliposando.PNG" alt="descripción"><br><span style="font-size:.5rem;color:#374151"></span></div>
+      <div class="g-item-placeholder"><img src="giuliposando.PNG" alt="descripción"></div>
     </div>
     <div class="g-item g-4">
-      <div class="g-item-placeholder"><img src="eugebaggy.jpeg" alt="descripción"><br><span style="font-size:.5rem;color:#374151"></span></div>
+      <div class="g-item-placeholder"><img src="eugebaggy.jpeg" alt="descripción"></div>
     </div>
     <div class="g-item g-5">
-      <div class="g-item-placeholder"><img src="giulimoto.PNG" alt="descripción"><br><span style="font-size:.5rem;color:#374151"></span></div>
+      <div class="g-item-placeholder"><img src="giulimoto.PNG" alt="descripción"></div>
     </div>
     <div class="g-item g-6">
-      <div class="g-item-placeholder"><img src="tomiyyobalcon.jpg" alt="descripción"><br><span style="font-size:.5rem;color:#374151"></span></div>
+      <div class="g-item-placeholder"><img src="tomiyyobalcon.jpg" alt="descripción"></div>
     </div>
   </div>
 </section>
@@ -1062,7 +1303,6 @@
   <p class="section-label">// Entrá al canal</p>
   <h2 class="section-title">¿LISTO PARA EL DROP?</h2>
   <p>Stock limitado. Sin segunda oportunidad.<br>Escribinos y asegurá el tuyo antes que nadie.</p>
-  <!-- CAMBIAR: número WhatsApp -->
   <a class="btn-primary"
      href="https://wa.me/59894899706?text=Hola%20Zentra%21%20Quiero%20info%20sobre%20los%20drops%20actuales"
      target="_blank"
@@ -1084,7 +1324,6 @@
 
 <!-- ─────────────────────────── MUSIC PLAYER ─────────────────────────── -->
 <div id="zplayer" class="zplayer">
-  <!-- progress bar (top edge) -->
   <div class="zp-progress-wrap" id="zpProgressWrap">
     <div class="zp-progress-bg">
       <div class="zp-progress-fill" id="zpFill"></div>
@@ -1092,7 +1331,6 @@
     </div>
   </div>
 
-  <!-- LEFT: track info -->
   <div class="zp-left">
     <div class="zp-art" id="zpArt">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2">
@@ -1106,7 +1344,6 @@
     </div>
   </div>
 
-  <!-- CENTER: controls -->
   <div class="zp-center">
     <button class="zp-btn" id="zpPrev" title="Anterior">
       <svg viewBox="0 0 24 24" fill="currentColor"><path d="M6 6h2v12H6zm3.5 6 8.5 6V6z"/></svg>
@@ -1120,7 +1357,6 @@
     </button>
   </div>
 
-  <!-- RIGHT: volume + time -->
   <div class="zp-right">
     <span class="zp-time" id="zpTime">0:00 / 0:00</span>
     <button class="zp-btn zp-mute-btn" id="zpMute" title="Mute">
@@ -1136,12 +1372,11 @@
     </div>
   </div>
 
-  <!-- hidden audio + file input -->
   <audio id="zpAudio"></audio>
   <input type="file" id="zpFileInput" accept="audio/*" multiple style="display:none">
 </div>
 
-<!-- ─────────────────────────── JS CARRUSEL ─────────────────────────── -->
+<!-- ─────────────────────────── JS CARRUSEL PRINCIPAL ─────────────────────────── -->
 <script>
   const track   = document.getElementById('carouselTrack');
   const prevBtn = document.getElementById('prevBtn');
@@ -1156,7 +1391,7 @@
 
   function getCardWidth() {
     const card = track.querySelector('.product-card');
-    return card ? card.offsetWidth + 20 : 300; // 20 = gap
+    return card ? card.offsetWidth + 20 : 300;
   }
 
   function goTo(idx) {
@@ -1171,13 +1406,61 @@
   nextBtn.addEventListener('click', () => goTo(current + 1));
   window.addEventListener('resize', () => goTo(current));
 
-  // Touch / swipe
   let touchStartX = 0;
   track.addEventListener('touchstart', e => { touchStartX = e.touches[0].clientX; }, { passive: true });
-  track.addEventListener('touchend',   e => {
+  track.addEventListener('touchend', e => {
     const dx = touchStartX - e.changedTouches[0].clientX;
     if (Math.abs(dx) > 50) goTo(current + (dx > 0 ? 1 : -1));
   });
+</script>
+
+<!-- ─────────────────────────── JS CARRUSEL IMÁGENES POR PRODUCTO ─────────────────────────── -->
+<script>
+(function () {
+  document.querySelectorAll('.card-img').forEach(function (cardImg) {
+    const slides   = cardImg.querySelector('.card-slides');
+    const dots     = cardImg.querySelectorAll('.card-img-dot');
+    const prevBtn  = cardImg.querySelector('.card-img-prev');
+    const nextBtn  = cardImg.querySelector('.card-img-next');
+    const total    = parseInt(cardImg.dataset.total) || 1;
+    let current    = 0;
+
+    function goTo(idx) {
+      current = ((idx % total) + total) % total;
+      slides.style.transform = `translateX(-${current * 100}%)`;
+      dots.forEach(function (d, i) {
+        d.classList.toggle('active', i === current);
+      });
+    }
+
+    if (prevBtn) prevBtn.addEventListener('click', function (e) {
+      e.stopPropagation();
+      goTo(current - 1);
+    });
+
+    if (nextBtn) nextBtn.addEventListener('click', function (e) {
+      e.stopPropagation();
+      goTo(current + 1);
+    });
+
+    dots.forEach(function (dot, i) {
+      dot.addEventListener('click', function (e) {
+        e.stopPropagation();
+        goTo(i);
+      });
+    });
+
+    // Swipe táctil en la imagen
+    let touchStart = 0;
+    cardImg.addEventListener('touchstart', function (e) {
+      touchStart = e.touches[0].clientX;
+    }, { passive: true });
+    cardImg.addEventListener('touchend', function (e) {
+      const dx = touchStart - e.changedTouches[0].clientX;
+      if (Math.abs(dx) > 30) goTo(current + (dx > 0 ? 1 : -1));
+    });
+  });
+})();
 </script>
 
 <!-- ─────────────────────────── JS MUSIC PLAYER ─────────────────────────── -->
@@ -1202,7 +1485,6 @@
   let currentIdx = 0;
   let dragging = false;
 
-  /* ── LOAD HINT ── */
   const hint = document.createElement('div');
   hint.className = 'zp-load-hint';
   hint.textContent = '+ CARGAR MÚSICA';
@@ -1211,7 +1493,6 @@
 
   hint.addEventListener('click', () => fileInput.click());
 
-  /* ── FILE INPUT ── */
   fileInput.addEventListener('change', e => {
     const files = Array.from(e.target.files);
     if (!files.length) return;
@@ -1226,7 +1507,6 @@
     hint.style.display = 'none';
   });
 
-  /* ── DRAG & DROP onto player ── */
   const player = document.getElementById('zplayer');
   player.addEventListener('dragover', e => { e.preventDefault(); player.style.borderColor = 'var(--accent)'; });
   player.addEventListener('dragleave', () => { player.style.borderColor = ''; });
@@ -1246,22 +1526,19 @@
     hint.style.display = 'none';
   });
 
-  /* ── LOAD TRACK ── */
   function loadTrack(idx) {
     if (!playlist.length) return;
     const t = playlist[idx];
     audio.src = t.url;
     titleEl.textContent  = t.name;
     artistEl.textContent = 'ZENTRA';
-    /* try cover art via ID3 — skip if not available */
     artEl.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2">
       <circle cx="12" cy="12" r="3"/><path d="M12 9V3l4 2"/>
       <circle cx="12" cy="12" r="9" stroke-opacity=".3"/></svg>`;
     updateTime();
   }
 
-  /* ── FADE HELPERS ── */
-  const FADE_DURATION = 1500; // ms
+  const FADE_DURATION = 1500;
   const FADE_STEPS    = 40;
   let fadeInterval    = null;
 
@@ -1309,9 +1586,7 @@
     }, interval);
   }
 
-  /* ── PLAY / PAUSE ── */
   function play() { fadeIn(); }
-
   function pause() { fadeOut(); }
 
   playBtn.addEventListener('click', () => {
@@ -1319,7 +1594,6 @@
     audio.paused ? play() : pause();
   });
 
-  /* ── PREV / NEXT ── */
   prevBtn2.addEventListener('click', () => {
     if (!playlist.length) return;
     fadeOut(() => {
@@ -1346,7 +1620,6 @@
     } else { pause(); }
   });
 
-  /* ── PROGRESS ── */
   function updateProgress() {
     if (!audio.duration || dragging) return;
     const pct = (audio.currentTime / audio.duration) * 100;
@@ -1373,7 +1646,6 @@
   window.addEventListener('touchmove',  e => { if (dragging) seekTo(e.touches[0]); }, { passive: true });
   window.addEventListener('touchend',   () => { dragging = false; });
 
-  /* ── TIME DISPLAY ── */
   function fmt(s) {
     const m = Math.floor(s / 60);
     const sec = Math.floor(s % 60);
@@ -1388,7 +1660,6 @@
 
   audio.addEventListener('loadedmetadata', updateTime);
 
-  /* ── VOLUME ── */
   audio.volume = 0.1;
   volSlider.value = 5;
   volSlider.addEventListener('input', () => {
@@ -1408,7 +1679,6 @@
     muteBtn.querySelector('.icon-mute').style.display = muted ? ''     : 'none';
   }
 
-  /* ── KEYBOARD SHORTCUTS ── */
   document.addEventListener('keydown', e => {
     if (['INPUT','TEXTAREA'].includes(document.activeElement.tagName)) return;
     if (e.code === 'Space')       { e.preventDefault(); audio.paused ? play() : pause(); }
@@ -1419,25 +1689,8 @@
     if (e.code === 'KeyM')        { muteBtn.click(); }
   });
 
-  /* 
-   ══════════════════════════════════════════════════
-   CÓMO CARGAR CANCIONES AUTOMÁTICAMENTE:
-
-   Reemplazá el array de abajo con tus archivos.
-   La música arrancará sola en el primer clic del
-   usuario en cualquier parte de la página.
-
-   playlist = [
-     { url: 'cancion1.mp3', name: 'Nombre Canción 1' },
-     { url: 'cancion2.mp3', name: 'Nombre Canción 2' },
-   ];
-   ══════════════════════════════════════════════════
-  */
-
-  /* ── AUTOPLAY EN PRIMER CLIC ── */
   playlist = [
     { url: 'song-1.mp3', name: 'Song 1' },
-    // { url: 'cancion2.mp3', name: 'Nombre Canción 2' },
   ];
 
   if (playlist.length) {
